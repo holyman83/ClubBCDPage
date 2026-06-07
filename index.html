@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Club BCD | Brazoria County Diving Club</title>
+  <meta name="description" content="Club BCD is a family-friendly scuba diving group meeting the second Saturday of each month at Mammoth Lake." />
+  <style>
+    :root {
+      --light-blue: #d9f2ff;
+      --ocean-blue: #1677a6;
+      --deep-blue: #06425c;
+      --white: #ffffff;
+      --soft-gray: #f7fbfd;
+      --text: #1f2d35;
+      --accent: #ffcc4d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--light-blue);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--light-blue);
+      text-align: center;
+      padding: 70px 20px 55px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--white);
+      color: var(--deep-blue);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      margin: 0;
+      color: var(--deep-blue);
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: clamp(1.15rem, 3vw, 1.6rem);
+      color: var(--ocean-blue);
+      margin: 10px 0 20px;
+      font-weight: bold;
+    }
+
+    .hero-text {
+      max-width: 760px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: -25px auto 50px;
+      padding: 0 18px;
+    }
+
+    section {
+      background: var(--white);
+      margin-bottom: 22px;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      color: var(--deep-blue);
+      margin-top: 0;
+      font-size: 1.8rem;
+    }
+
+    .meeting-card {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .info-box {
+      background: var(--soft-gray);
+      border-left: 6px solid var(--ocean-blue);
+      padding: 18px;
+      border-radius: 12px;
+    }
+
+    .info-box strong {
+      display: block;
+      color: var(--deep-blue);
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+
+    ul, ol {
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .rules li::marker {
+      color: var(--ocean-blue);
+      font-weight: bold;
+    }
+
+    .note {
+      background: #fff8df;
+      border-left: 6px solid var(--accent);
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 18px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      background: var(--deep-blue);
+      color: var(--white);
+    }
+
+    footer p {
+      margin: 5px 0;
+    }
+
+    a {
+      color: var(--ocean-blue);
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 50px 18px 45px;
+      }
+
+      section {
+        padding: 22px;
+      }
+    }
+	.navbar {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    background-color: #4db8ff;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 1000px;
+}
+
+.navbar a {
+    background-color: white;
+    color: #004a7c;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #004a7c;
+    color: white;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <img src="banner.png" alt="Club BCD" style="width: 1000px; height: auto;">
+  </header>
+  <main>
+	<nav class="navbar">
+		<a href="index.html">Home</a>
+		<a href="calendar.html">Events Calendar</a>
+		<a href="https://imgds360live.s3-us-west-2.amazonaws.com/storefront/3545665/mammoth-illustrated-map_1.pdf" target="_blank">Mammoth Map</a>
+	</nav>
+
+  
+    <section id="meeting">
+      <h2>When & Where We Meet</h2>
+      <p>
+        Club BCD meets on the <strong>second Saturday of each month</strong> at <strong>Mammoth Lake</strong>. Our goal is to create a relaxed dive day where divers and families can spend time together, enjoy the lake, and support one another in the sport of scuba diving.
+      </p>
+
+      <div class="meeting-card">
+        <div class="info-box">
+          <strong>When</strong>
+          Second Saturday of each month
+        </div>
+        <div class="info-box">
+          <strong>Where</strong>
+          Mammoth Lake, Lake Jackson, Texas
+        </div>
+        <div class="info-box">
+          <strong>Who</strong>
+          Divers, families, and those interested in the scuba community
+        </div>
+      </div>
+
+    </section>
+
+    <section id="mission">
+      <h2>Our Purpose</h2>
+      <p>
+        The vision for Club BCD is to provide a welcoming, safe, and respectful diving community where experienced divers, newer divers, and families can connect. We want to encourage local diving, support growing divers, and help families enjoy the outdoors together.
+      </p>
+    </section>
+
+    <section id="rules">
+      <h2>Club Rules</h2>
+      <ol class="rules">
+        <li>Keep the environment family friendly.</li>
+        <li>Be respectful to each other and to the property.</li>
+        <li>Children must be supervised at all times.</li>
+        <li>All minors diving must have an adult diving with them.</li>
+        <li>Divers are responsible for their own training, equipment, dive plan, and personal safety.</li>
+        <li>No alcohol.</li>
+      </ol>
+    </section>
+
+    <section id="contact">
+      <h2>Connect With Us</h2>
+      <p>
+        More details, monthly updates, and group communication will be shared as the club develops.
+      </p>
+      <p>
+        <strong>Club BCD — Brazoria County Diving Club</strong>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Club BCD | Brazoria County Diving Club</p>
+    <p>Family-friendly diving in Brazoria County</p>
+  </footer>
+</body>
+</html>
