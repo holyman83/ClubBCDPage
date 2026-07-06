@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Club BCD Card Designer</title>
+  <style>
+    :root {
+      --blue-light: #d9f3ff;
+      --blue: #49b9ee;
+      --blue-dark: #064f73;
+      --navy: #05364f;
+      --white: #ffffff;
+      --gray: #f5f8fa;
+      --border: #b9dbe8;
+      --danger: #c0392b;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, var(--blue-light), #ffffff);
+      color: var(--navy);
+    }
+
+    header {
+      text-align: center;
+      padding: 28px 16px 12px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      margin: 8px auto 0;
+      max-width: 760px;
+      line-height: 1.4;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 430px) 1fr;
+      gap: 24px;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .panel, .preview-area {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      padding: 20px;
+    }
+
+    .section-title {
+      margin: 18px 0 10px;
+      color: var(--blue-dark);
+      border-bottom: 2px solid var(--blue-light);
+      padding-bottom: 6px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      margin-top: 5px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font: inherit;
+      color: var(--navy);
+      background: var(--white);
+    }
+
+    textarea { min-height: 76px; resize: vertical; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: var(--blue-dark);
+      color: white;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); opacity: 0.92; }
+
+    .secondary { background: var(--blue); color: var(--navy); }
+    .danger { background: var(--danger); }
+
+    .cert-card {
+      border: 1px dashed var(--border);
+      padding: 12px;
+      border-radius: 12px;
+      margin-top: 12px;
+      background: var(--gray);
+    }
+
+    .preview-area h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+      align-items: flex-start;
+    }
+
+    .id-card {
+      width: 3.375in;
+      height: 2.125in;
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--white);
+      border: 2px solid var(--blue-dark);
+      position: relative;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+      page-break-inside: avoid;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .card-front {
+      background-image: linear-gradient(135deg, #e7f8ff 0%, #96dcf7 55%, #38aee5 100%);
+    }
+
+    .card-back {
+      background-image: linear-gradient(135deg, #ffffff 0%, #dff5ff 100%);
+    }
+
+    .card-front::before,
+    .card-back::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.45);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .wave {
+      position: absolute;
+      left: -40px;
+      right: -40px;
+      bottom: -48px;
+      height: 96px;
+      background: rgba(5, 54, 79, 0.18);
+      border-radius: 50% 50% 0 0;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
+      padding: 12px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .club-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .club-name {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: 0.5px;
+      line-height: 1.05;
+    }
+
+    .club-sub {
+      font-size: 0.52rem;
+      font-weight: bold;
+      color: var(--blue-dark);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    .photo {
+      width: 0.78in;
+      height: 0.78in;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 2px solid white;
+      background: rgba(255,255,255,0.7);
+      flex-shrink: 0;
+    }
+
+    .front-main {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .member-name {
+      font-weight: 900;
+      font-size: 1.05rem;
+      margin: 5px 0 4px;
+      color: var(--navy);
+      text-transform: uppercase;
+      word-break: break-word;
+    }
+
+    .small-line {
+      font-size: 0.62rem;
+      margin: 2px 0;
+      line-height: 1.2;
+    }
+
+    .label-text {
+      font-weight: bold;
+      color: var(--blue-dark);
+    }
+
+    .motto {
+	  display: flex;
+      margin-top: auto;
+	  justify-content: center;
+      font-size: 0.58rem;
+      font-weight: bold;
+      letter-spacing: 0.4px;
+      color: var(--navy);
+    }
+
+    .back-title {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .cert-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+
+    .cert-item {
+      min-height: 0.31in;
+      font-size: 0.38rem;
+      line-height: 1.05;
+      border: 1px solid rgba(6,79,115,0.18);
+      border-radius: 4px;
+      padding: 2px;
+      background: rgba(255,255,255,0.55);
+      overflow: hidden;
+      word-break: break-word;
+    }
+
+    .cert-item strong {
+      display: block;
+      font-size: 0.4rem;
+      line-height: 1.05;
+    }
+
+    .empty-cert-message {
+      grid-column: 1 / -1;
+      min-height: 0.5in;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.48rem;
+    }
+
+    .emergency-box {
+      margin-top: 5px;
+      border: 1px solid rgba(6,79,115,0.25);
+      border-radius: 9px;
+      padding: 5px;
+      background: rgba(255,255,255,0.72);
+    }
+
+    .front-emergency-title {
+      font-size: 0.52rem;
+      font-weight: 900;
+      color: var(--blue-dark);
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+
+    .fine-print {
+      font-size: 0.46rem;
+      line-height: 1.15;
+      margin-top: auto;
+      color: #254f62;
+    }
+
+    .back-image {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      width: 0.72in;
+      height: 0.55in;
+      object-fit: cover;
+      opacity: 0.72;
+      border-radius: 8px;
+      border: 1px solid white;
+    }
+
+    .notes {
+      margin-top: 18px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      background: #eefaff;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+.navbar {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    background-color: #4db8ff;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 1000px;
+}
+
+.navbar a {
+    background-color: white;
+    color: #004a7c;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #004a7c;
+    color: white;
+}
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: white; }
+      header, .panel, .notes, .preview-area h2, .print-hide { display: none !important; }
+      .layout { display: block; padding: 0; }
+      .preview-area { box-shadow: none; border: none; padding: 0; }
+      .cards { justify-content: flex-start; gap: 0.25in; }
+      .id-card { box-shadow: none; margin: 0.15in; }
+      @page { margin: 0.35in; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://github.com/holyman83/ClubBCDPage/blob/main/Banner.png?raw=true" alt="Club BCD" style="width: 1000px; height: auto;">
+    <h1>Club BCD Card Designer</h1>
+    <p>Create a printable diver info card with emergency contact details, scuba certifications (up to 12), a front profile picture, and customizable front/back background images.</p>
+	  <nav class="navbar">
+		<a href="index.html">Home</a>
+		<a href="calendar.html">Events Calendar</a>
+		<a href="https://imgds360live.s3-us-west-2.amazonaws.com/storefront/3545665/mammoth-illustrated-map_1.pdf" target="_blank">Mammoth Map</a>
+	</nav>
+  </header>
+  <main class="layout">
+    <section class="panel">
+      <h2>Card Details</h2>
+
+      <label for="memberName">Name</label>
+      <input id="memberName" type="text" placeholder="Diver Name" />
+
+      <div class="row">
+        <div>
+          <label for="phone">Phone</label>
+          <input id="phone" type="text" placeholder="(555) 555-5555" />
+        </div>
+        <div>
+          <label for="bloodType">Blood Type / Notes</label>
+          <input id="bloodType" type="text" placeholder="Optional" />
+        </div>
+      </div>
+
+      <label for="medicalNotes">Medical Notes / Allergies</label>
+      <textarea id="medicalNotes" placeholder="Example: No known allergies, asthma inhaler, medications, etc."></textarea>
+
+      <h3 class="section-title">Emergency Contact</h3>
+      <label for="emergencyName">Emergency Contact Name</label>
+      <input id="emergencyName" type="text" placeholder="Emergency contact name" />
+
+      <div class="row">
+        <div>
+          <label for="emergencyPhone">Emergency Phone</label>
+          <input id="emergencyPhone" type="text" placeholder="(555) 555-5555" />
+        </div>
+        <div>
+          <label for="emergencyRelation">Relationship</label>
+          <input id="emergencyRelation" type="text" placeholder="Spouse, parent, friend" />
+        </div>
+      </div>
+
+      <h3 class="section-title">Images</h3>
+      <label for="frontProfileImage">Front Profile Picture (100 X 100)</label>
+      <input id="frontProfileImage" type="file" accept="image/*" />
+
+      <label for="frontBackgroundImage">Front Background Image</label>
+      <input id="frontBackgroundImage" type="file" accept="image/*" />
+
+      <label for="backBackgroundImage">Back Background Image</label>
+      <input id="backBackgroundImage" type="file" accept="image/*" />
+
+      <h3 class="section-title">Scuba Certifications</h3>
+      <p style="margin-top: -4px; font-size: 0.9rem;">Add up to 12 certifications. Only certifications you enter will show on the back of the card.</p>
+      <div id="certFields"></div>
+      <div class="button-row">
+        <button id="addCertButton" type="button" class="secondary" onclick="addCert()">+ Add Certification</button>
+        <button type="button" onclick="updatePreview()">Update Preview</button>
+        <button type="button" onclick="window.print()">Print / Save PDF</button>
+        <button type="button" onclick="saveCardAsJpg('frontCard', 'club-bcd-front.jpg')">Save Front JPG</button>
+        <button type="button" onclick="saveCardAsJpg('backCard', 'club-bcd-back.jpg')">Save Back JPG</button>
+        <button type="button" class="danger" onclick="resetForm()">Reset</button>
+      </div>
+
+      <div class="notes">
+        <strong>Note:</strong> This card is a personal reference card, not an official certification card or medical document.
+      </div>
+    </section>
+
+    <section class="preview-area">
+      <h2>Card Preview</h2>
+      <div class="cards">
+        <article id="frontCard" class="id-card card-front" aria-label="Front of card">
+          <div class="wave"></div>
+          <div class="card-content">
+            <div class="front-main">
+			<table>
+			<tr><td>
+              <div>
+				<div id="namePreview" class="member-name">Your Name</div>
+                <div class="small-line"><span class="label-text">Phone:</span> <span id="phonePreview">---</span></div>
+                <div class="small-line"><span class="label-text">Blood / Notes:</span> <span id="bloodPreview">---</span></div>
+                <div class="small-line"><span class="label-text">Medical:</span> <span id="medicalPreview">---</span></div>
+                <div class="front-emergency-title">Emergency Contact</div>
+                <div class="emergency-box">
+                  <div class="small-line"><span class="label-text">Name:</span> <span id="emNamePreview">---</span></div>
+                  <div class="small-line"><span class="label-text">Phone:</span> <span id="emPhonePreview">---</span></div>
+                  <div class="small-line"><span class="label-text">Relationship:</span> <span id="emRelationPreview">---</span></div>
+                </div>
+              </div>
+			  </td><td>
+			  <div style="display: flex; justify-content: center; align-items: top;">
+			  <img id="frontPhotoPreview" class="photo" alt="Front uploaded preview" style="width: 100px;"/>
+			  </div>
+			  </td></tr></table>
+            </div>
+            <div class="motto">www.clubbcd.com</div>
+		</div>
+        </article>
+
+        <article id="backCard" class="id-card card-back" aria-label="Back of card">
+          <div class="card-content">
+            <div class="back-title">Scuba Certifications</div>
+            <div id="certPreview" class="cert-list"></div>
+
+            <div class="fine-print">
+              Personal reference card only. Not a substitute for official certification, medical clearance, dive planning, or emergency services.
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="notes print-hide">
+        Tip: Use Save Front/Back JPG to download each side as an image. The JPG buttons use a small capture library, so open the page with internet access the first time it loads. You can also use Print / Save PDF.
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    const certFields = document.getElementById('certFields');
+    let certCount = 0;
+
+    const fallbackSvg = encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+        <rect width="300" height="300" fill="#d9f3ff"/>
+        <circle cx="150" cy="125" r="48" fill="#49b9ee"/>
+        <path d="M70 250c15-60 145-60 160 0" fill="#064f73"/>
+        <text x="150" y="285" font-family="Arial" font-size="24" text-anchor="middle" fill="#064f73">CLUB BCD</text>
+      </svg>
+    `);
+
+    document.getElementById('frontPhotoPreview').src = `data:image/svg+xml,${fallbackSvg}`;
+
+    function addCert(name = '', number = '') {
+      const existingCerts = document.querySelectorAll('.cert-card').length;
+      if (existingCerts >= 12) {
+        alert('This card can hold up to 12 certifications.');
+        return;
+      }
+      certCount++;
+      const cert = document.createElement('div');
+      cert.className = 'cert-card';
+      cert.innerHTML = `
+        <label>Certification Name</label>
+        <input class="cert-name" type="text" placeholder="Open Water Diver, Nitrox, Rescue Diver" value="${escapeHtml(name)}" oninput="updatePreview()" />
+        <label>Certification Number</label>
+        <input class="cert-number" type="text" placeholder="Certification number" value="${escapeHtml(number)}" oninput="updatePreview()" />
+        <div class="button-row">
+          <button type="button" class="danger" onclick="this.closest('.cert-card').remove(); updatePreview(); updateAddButton();">Remove</button>
+        </div>
+      `;
+      certFields.appendChild(cert);
+      updatePreview();
+      updateAddButton();
+    }
+
+    function updateAddButton() {
+      const button = document.getElementById('addCertButton');
+      if (!button) return;
+      const count = document.querySelectorAll('.cert-card').length;
+      button.disabled = count >= 12;
+      button.textContent = count >= 12 ? '12 Certifications Added' : '+ Add Certification';
+      button.style.opacity = count >= 12 ? '0.6' : '1';
+      button.style.cursor = count >= 12 ? 'not-allowed' : 'pointer';
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[char]));
+    }
+
+    function val(id, fallback = '---') {
+      const value = document.getElementById(id).value.trim();
+      return value || fallback;
+    }
+
+    function setText(id, text) {
+      document.getElementById(id).textContent = text;
+    }
+
+    function updatePreview() {
+      setText('namePreview', val('memberName', 'Your Name'));
+      setText('phonePreview', val('phone'));
+      setText('bloodPreview', val('bloodType'));
+      setText('medicalPreview', val('medicalNotes'));
+      setText('emNamePreview', val('emergencyName'));
+      setText('emPhonePreview', val('emergencyPhone'));
+      setText('emRelationPreview', val('emergencyRelation'));
+
+      const certPreview = document.getElementById('certPreview');
+      certPreview.innerHTML = '';
+      const names = [...document.querySelectorAll('.cert-name')];
+      const numbers = [...document.querySelectorAll('.cert-number')];
+
+      names.slice(0, 12).forEach((nameInput, index) => {
+        const certName = nameInput.value.trim();
+        const certNumber = numbers[index].value.trim();
+        if (!certName && !certNumber) return;
+        const div = document.createElement('div');
+        div.className = 'cert-item';
+        div.innerHTML = `<strong>${escapeHtml(certName || 'Certification')}</strong>No. ${escapeHtml(certNumber || '---')}`;
+        certPreview.appendChild(div);
+      });
+
+      if (!certPreview.children.length) {
+        const div = document.createElement('div');
+        div.className = 'cert-item empty-cert-message';
+        div.innerHTML = '<strong>No certifications entered yet</strong>Add certifications using the form.';
+        certPreview.appendChild(div);
+      }
+
+      updateAddButton();
+    }
+
+    function handleProfileImageUpload(inputId, previewId) {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = event => {
+          preview.src = event.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function handleBackgroundUpload(inputId, cardId, fallbackGradient) {
+      const input = document.getElementById(inputId);
+      const card = document.getElementById(cardId);
+      input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = event => {
+          card.style.backgroundImage = `linear-gradient(rgba(255,255,255,0.18), rgba(255,255,255,0.18)), url('${event.target.result}')`;
+        };
+        reader.readAsDataURL(file);
+      });
+      card.dataset.fallbackGradient = fallbackGradient;
+    }
+
+
+    async function saveCardAsJpg(cardId, filename) {
+      updatePreview();
+
+      if (typeof html2canvas === 'undefined') {
+        alert('The JPG saver did not load. Make sure this page is opened while connected to the internet, then refresh and try again.');
+        return;
+      }
+
+      const card = document.getElementById(cardId);
+      const originalBoxShadow = card.style.boxShadow;
+      card.style.boxShadow = 'none';
+
+      try {
+        const canvas = await html2canvas(card, {
+          backgroundColor: '#ffffff',
+          scale: 4,
+          useCORS: true,
+          allowTaint: true,
+          logging: false
+        });
+
+        const jpgData = canvas.toDataURL('image/jpeg', 0.95);
+        const link = document.createElement('a');
+        link.href = jpgData;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } catch (error) {
+        console.error(error);
+        alert('Could not save JPG. Try refreshing the page, then save again.');
+      } finally {
+        card.style.boxShadow = originalBoxShadow;
+      }
+    }
+
+    function resetForm() {
+      if (!confirm('Clear the card designer?')) return;
+      document.querySelectorAll('input[type="text"], textarea').forEach(input => input.value = '');
+      document.querySelectorAll('input[type="file"]').forEach(input => input.value = '');
+      certFields.innerHTML = '';
+      document.getElementById('frontPhotoPreview').src = `data:image/svg+xml,${fallbackSvg}`;
+      document.getElementById('frontCard').style.backgroundImage = '';
+      document.getElementById('backCard').style.backgroundImage = '';
+      addCert();
+      updatePreview();
+    }
+
+    document.querySelectorAll('input, textarea').forEach(input => {
+      if (input.type !== 'file') input.addEventListener('input', updatePreview);
+    });
+
+    handleProfileImageUpload('frontProfileImage', 'frontPhotoPreview');
+    handleBackgroundUpload('frontBackgroundImage', 'frontCard', 'linear-gradient(135deg, #e7f8ff 0%, #96dcf7 55%, #38aee5 100%)');
+    handleBackgroundUpload('backBackgroundImage', 'backCard', 'linear-gradient(135deg, #ffffff 0%, #dff5ff 100%)');
+    addCert('Open Water Diver', '');
+    updatePreview();
+  </script>
+</body>
+</html>
