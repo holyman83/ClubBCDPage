@@ -38,7 +38,8 @@ The pages rely on these CDNs, so an internet connection is needed:
 - `Banner.png` – site banner
 - `Stamp.png` – club stamp image
 
+## License
 
-# haha i snuck tails1154 username in here HAHAHAHHHAWIJOFHASDIOPUFHSDOIUFJSDOFIJSDFOISJDFSOJIN
+Licensed under the [GNU General Public License v3.0](LICENSE). See the [LICENSE](LICENSE) file for details.
 
-idk
+© 2026 Club BCD – Brazoria County Diving Club
