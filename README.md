@@ -38,6 +38,7 @@ The pages rely on these CDNs, so an internet connection is needed:
 - `Banner.png` – site banner
 - `Stamp.png` – club stamp image
 
-## License
 
-Content and design © Club BCD. All rights reserved.
+# haha i snuck tails1154 username in here HAHAHAHHHAWIJOFHASDIOPUFHSDOIUFJSDOFIJSDFOISJDFSOJIN
+
+idk
