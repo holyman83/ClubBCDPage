@@ -1,520 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Club BCD Card Designer</title>
+  <meta name="description" content="Create a printable Club BCD diver info card with emergency contacts, scuba certifications, and photos.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --blue-light: #d9f3ff;
-      --blue: #49b9ee;
-      --blue-dark: #064f73;
-      --navy: #05364f;
-      --white: #ffffff;
-      --gray: #f5f8fa;
-      --border: #b9dbe8;
-      --danger: #c0392b;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, var(--blue-light), #ffffff);
-      color: var(--navy);
-    }
-
-    header {
-      text-align: center;
-      padding: 28px 16px 12px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-      letter-spacing: 1px;
-    }
-
-    header p {
-      margin: 8px auto 0;
-      max-width: 760px;
-      line-height: 1.4;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(320px, 430px) 1fr;
-      gap: 24px;
-      max-width: 1300px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .panel, .preview-area {
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      padding: 20px;
-    }
-
-    .section-title {
-      margin: 18px 0 10px;
-      color: var(--blue-dark);
-      border-bottom: 2px solid var(--blue-light);
-      padding-bottom: 6px;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-top: 12px;
-      font-size: 0.95rem;
-    }
-
-    input, textarea, select {
-      width: 100%;
-      margin-top: 5px;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font: inherit;
-      color: var(--navy);
-      background: var(--white);
-    }
-
-    textarea { min-height: 76px; resize: vertical; }
-
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    button {
-      border: none;
-      border-radius: 999px;
-      padding: 11px 16px;
-      font-weight: bold;
-      cursor: pointer;
-      background: var(--blue-dark);
-      color: white;
-      transition: transform 0.15s ease, opacity 0.15s ease;
-    }
-
-    button:hover { transform: translateY(-1px); opacity: 0.92; }
-
-    .secondary { background: var(--blue); color: var(--navy); }
-    .danger { background: var(--danger); }
-
-    .cert-card {
-      border: 1px dashed var(--border);
-      padding: 12px;
-      border-radius: 12px;
-      margin-top: 12px;
-      background: var(--gray);
-    }
-
-    .preview-area h2 {
-      margin-top: 0;
-      text-align: center;
-    }
-
-    .cards {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 24px;
-      align-items: flex-start;
-    }
-
-    .id-card {
-      width: 3.375in;
-      height: 2.125in;
-      border-radius: 18px;
-      overflow: hidden;
-      background: var(--white);
-      border: 2px solid var(--blue-dark);
-      position: relative;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
-      page-break-inside: avoid;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-
-    .card-front {
-      background-image: linear-gradient(135deg, #e7f8ff 0%, #96dcf7 55%, #38aee5 100%);
-    }
-
-    .card-back {
-      background-image: linear-gradient(135deg, #ffffff 0%, #dff5ff 100%);
-    }
-
-    .card-front::before,
-    .card-back::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.45);
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .wave {
-      position: absolute;
-      left: -40px;
-      right: -40px;
-      bottom: -48px;
-      height: 96px;
-      background: rgba(5, 54, 79, 0.18);
-      border-radius: 50% 50% 0 0;
-    }
-
-    .card-content {
-      position: relative;
-      z-index: 2;
-      padding: 12px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .club-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 8px;
-    }
-
-    .club-name {
-      font-size: 1.05rem;
-      font-weight: 900;
-      color: var(--navy);
-      letter-spacing: 0.5px;
-      line-height: 1.05;
-    }
-
-    .club-sub {
-      font-size: 0.52rem;
-      font-weight: bold;
-      color: var(--blue-dark);
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-    }
-
-    .photo {
-      width: 0.78in;
-      height: 0.78in;
-      border-radius: 12px;
-      object-fit: cover;
-      border: 2px solid white;
-      background: rgba(255,255,255,0.7);
-      flex-shrink: 0;
-    }
-
-    .front-main {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 10px;
-      flex: 1;
-    }
-
-    .member-name {
-      font-weight: 900;
-      font-size: 1.05rem;
-      margin: 5px 0 4px;
-      color: var(--navy);
-      text-transform: uppercase;
-      word-break: break-word;
-    }
-
-    .small-line {
-      font-size: 0.62rem;
-      margin: 2px 0;
-      line-height: 1.2;
-    }
-
-    .label-text {
-      font-weight: bold;
-      color: var(--blue-dark);
-    }
-
-    .motto {
-	  display: flex;
-      margin-top: auto;
-	  justify-content: center;
-      font-size: 0.58rem;
-      font-weight: bold;
-      letter-spacing: 0.4px;
-      color: var(--navy);
-    }
-
-    .back-title {
-      font-size: 0.85rem;
-      font-weight: 900;
-      color: var(--blue-dark);
-      margin-bottom: 4px;
-      text-transform: uppercase;
-    }
-
-    .cert-list {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 3px;
-      margin-top: 5px;
-      overflow: hidden;
-    }
-
-    .cert-item {
-      min-height: 0.31in;
-      font-size: 0.38rem;
-      line-height: 1.05;
-      border: 1px solid rgba(6,79,115,0.18);
-      border-radius: 4px;
-      padding: 2px;
-      background: rgba(255,255,255,0.55);
-      overflow: hidden;
-      word-break: break-word;
-    }
-
-    .cert-item strong {
-      display: block;
-      font-size: 0.4rem;
-      line-height: 1.05;
-    }
-
-    .empty-cert-message {
-      grid-column: 1 / -1;
-      min-height: 0.5in;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      text-align: center;
-      font-size: 0.48rem;
-    }
-
-    .emergency-box {
-      margin-top: 5px;
-      border: 1px solid rgba(6,79,115,0.25);
-      border-radius: 9px;
-      padding: 5px;
-      background: rgba(255,255,255,0.72);
-    }
-
-    .front-emergency-title {
-      font-size: 0.52rem;
-      font-weight: 900;
-      color: var(--blue-dark);
-      text-transform: uppercase;
-      margin-top: 5px;
-    }
-
-    .fine-print {
-      font-size: 0.46rem;
-      line-height: 1.15;
-      margin-top: auto;
-      color: #254f62;
-    }
-
-    .back-image {
-      position: absolute;
-      right: 8px;
-      bottom: 8px;
-      width: 0.72in;
-      height: 0.55in;
-      object-fit: cover;
-      opacity: 0.72;
-      border-radius: 8px;
-      border: 1px solid white;
-    }
-
-    .notes {
-      margin-top: 18px;
-      font-size: 0.9rem;
-      line-height: 1.4;
-      background: #eefaff;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-    }
-.navbar {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    background-color: #4db8ff;
-    padding: 15px;
-    border-radius: 10px;
-    margin: 20px auto;
-    max-width: 1000px;
-}
-
-.navbar a {
-    background-color: white;
-    color: #004a7c;
-    text-decoration: none;
-    font-weight: bold;
-    padding: 12px 24px;
-    border-radius: 8px;
-    transition: 0.3s;
-}
-
-.navbar a:hover {
-    background-color: #004a7c;
-    color: white;
-}
-
-    @media (max-width: 900px) {
-      .layout { grid-template-columns: 1fr; }
-      .row { grid-template-columns: 1fr; }
-    }
-
     @media print {
       body { background: white; }
-      header, .panel, .notes, .preview-area h2, .print-hide { display: none !important; }
-      .layout { display: block; padding: 0; }
-      .preview-area { box-shadow: none; border: none; padding: 0; }
-      .cards { justify-content: flex-start; gap: 0.25in; }
-      .id-card { box-shadow: none; margin: 0.15in; }
+      nav, .card-header, .panel, .notes, .print-hide, .preview-title { display: none !important; }
+      main { display: block !important; padding: 0 !important; }
+      .preview-area { box-shadow: none !important; border: none !important; padding: 0 !important; }
+      .cards { justify-content: flex-start !important; gap: 0.25in !important; }
+      .id-card { box-shadow: none !important; margin: 0.15in !important; }
       @page { margin: 0.35in; }
     }
   </style>
 </head>
-<body>
-  <header>
-    <img src="https://github.com/holyman83/ClubBCDPage/blob/main/Banner.png?raw=true" alt="Club BCD" style="width: 1000px; height: auto;">
-    <h1>Club BCD Card Designer</h1>
-    <p>Create a printable diver info card with emergency contact details, scuba certifications (up to 12), a front profile picture, and customizable front/back background images.</p>
-	  <nav class="navbar">
-		<a href="index.html">Home</a>
-		<a href="calendar.html">Events Calendar</a>
-		<a href="https://imgds360live.s3-us-west-2.amazonaws.com/storefront/3545665/mammoth-illustrated-map_1.pdf" target="_blank">Mammoth Map</a>
-	</nav>
+<body class="min-h-screen bg-gradient-to-b from-sky-100 via-white to-sky-50 font-sans text-slate-700 antialiased">
+  <nav class="sticky top-0 z-50 border-b border-sky-200/60 bg-white/80 backdrop-blur-md print:hidden">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+      <a href="index.html" class="flex shrink-0 items-center gap-2.5">
+        <span class="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-700 text-lg text-white shadow-md">🤿</span>
+        <span class="text-lg font-black tracking-tight text-sky-950">Club <span class="text-sky-600">BCD</span></span>
+      </a>
+      <div class="flex items-center gap-1 overflow-x-auto">
+        <a href="index.html" class="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-semibold text-sky-800 transition hover:bg-sky-100">Home</a>
+        <a href="cardgenerator.html" aria-current="page" class="whitespace-nowrap rounded-full bg-sky-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm">Card Designer</a>
+        <a href="calendar.html" class="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-semibold text-sky-800 transition hover:bg-sky-100">Events Calendar</a>
+        <a href="https://imgds360live.s3-us-west-2.amazonaws.com/storefront/3545665/mammoth-illustrated-map_1.pdf" target="_blank" rel="noopener" class="whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-semibold text-sky-800 transition hover:bg-sky-100">Mammoth Map ↗</a>
+      </div>
+    </div>
+  </nav>
+
+  <header class="card-header px-4 pb-2 pt-8 text-center">
+    <h1 class="text-3xl font-black tracking-tight text-sky-950 sm:text-4xl">Card Designer</h1>
+    <p class="mx-auto mt-3 max-w-2xl leading-relaxed">
+      Create a printable diver info card with emergency contact details, scuba certifications (up to 12), a front profile picture, and customizable front/back background images.
+    </p>
   </header>
-  <main class="layout">
-    <section class="panel">
-      <h2>Card Details</h2>
 
-      <label for="memberName">Name</label>
-      <input id="memberName" type="text" placeholder="Diver Name" />
+  <main class="mx-auto grid max-w-6xl gap-6 px-4 py-8 lg:grid-cols-[430px_1fr]">
+    <form id="cardForm" class="panel rounded-3xl bg-white/95 p-6 shadow-lg ring-1 ring-sky-100 print:hidden" novalidate>
+      <h2 class="text-xl font-black tracking-tight text-sky-950">Card Details</h2>
+      <p class="mt-1 text-xs text-slate-500"><span class="font-bold text-red-500">*</span> Required fields</p>
 
-      <div class="row">
+      <label for="memberName" class="mt-5 block text-sm font-bold text-sky-900">
+        Name <span class="text-red-500">*</span>
+      </label>
+      <input id="memberName" name="memberName" type="text" required minlength="2" maxlength="60" autocomplete="name" placeholder="Diver Name"
+        class="w-full rounded-xl border border-sky-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+      <p id="memberName-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
+
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
         <div>
-          <label for="phone">Phone</label>
-          <input id="phone" type="text" placeholder="(555) 555-5555" />
+          <label for="phone" class="block text-sm font-bold text-sky-900">Phone</label>
+          <input id="phone" name="phone" type="tel" maxlength="15" inputmode="tel" autocomplete="tel" placeholder="(555) 555-5555"
+            class="w-full rounded-xl border border-sky-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+          <p id="phone-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
         </div>
         <div>
-          <label for="bloodType">Blood Type / Notes</label>
-          <input id="bloodType" type="text" placeholder="Optional" />
-        </div>
-      </div>
-
-      <label for="medicalNotes">Medical Notes / Allergies</label>
-      <textarea id="medicalNotes" placeholder="Example: No known allergies, asthma inhaler, medications, etc."></textarea>
-
-      <h3 class="section-title">Emergency Contact</h3>
-      <label for="emergencyName">Emergency Contact Name</label>
-      <input id="emergencyName" type="text" placeholder="Emergency contact name" />
-
-      <div class="row">
-        <div>
-          <label for="emergencyPhone">Emergency Phone</label>
-          <input id="emergencyPhone" type="text" placeholder="(555) 555-5555" />
-        </div>
-        <div>
-          <label for="emergencyRelation">Relationship</label>
-          <input id="emergencyRelation" type="text" placeholder="Spouse, parent, friend" />
+          <label for="bloodType" class="block text-sm font-bold text-sky-900">Blood Type / Notes</label>
+          <input id="bloodType" name="bloodType" type="text" maxlength="30" placeholder="Optional"
+            class="w-full rounded-xl border border-sky-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+          <p id="bloodType-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
         </div>
       </div>
 
-      <h3 class="section-title">Images</h3>
-      <label for="frontProfileImage">Front Profile Picture (100 X 100)</label>
-      <input id="frontProfileImage" type="file" accept="image/*" />
+      <label for="medicalNotes" class="mt-4 block text-sm font-bold text-sky-900">Medical Notes / Allergies</label>
+      <textarea id="medicalNotes" name="medicalNotes" maxlength="500" rows="3" placeholder="Example: No known allergies, asthma inhaler, medications, etc."
+        class="mt-1 w-full resize-y rounded-xl border border-sky-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200"></textarea>
+      <p id="medicalNotes-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
 
-      <label for="frontBackgroundImage">Front Background Image</label>
-      <input id="frontBackgroundImage" type="file" accept="image/*" />
+      <h3 class="mt-7 border-b-2 border-sky-100 pb-2 text-lg font-black tracking-tight text-sky-900">Emergency Contact</h3>
 
-      <label for="backBackgroundImage">Back Background Image</label>
-      <input id="backBackgroundImage" type="file" accept="image/*" />
+      <label for="emergencyName" class="mt-4 block text-sm font-bold text-sky-900">
+        Emergency Contact Name <span class="text-red-500">*</span>
+      </label>
+      <input id="emergencyName" name="emergencyName" type="text" required minlength="2" maxlength="60" placeholder="Emergency contact name"
+        class="w-full rounded-xl border border-sky-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+      <p id="emergencyName-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
 
-      <h3 class="section-title">Scuba Certifications</h3>
-      <p style="margin-top: -4px; font-size: 0.9rem;">Add up to 12 certifications. Only certifications you enter will show on the back of the card.</p>
-      <div id="certFields"></div>
-      <div class="button-row">
-        <button id="addCertButton" type="button" class="secondary" onclick="addCert()">+ Add Certification</button>
-        <button type="button" onclick="updatePreview()">Update Preview</button>
-        <button type="button" onclick="window.print()">Print / Save PDF</button>
-        <button type="button" onclick="saveCardAsJpg('frontCard', 'club-bcd-front.jpg')">Save Front JPG</button>
-        <button type="button" onclick="saveCardAsJpg('backCard', 'club-bcd-back.jpg')">Save Back JPG</button>
-        <button type="button" class="danger" onclick="resetForm()">Reset</button>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2">
+        <div>
+          <label for="emergencyPhone" class="block text-sm font-bold text-sky-900">
+            Emergency Phone <span class="text-red-500">*</span>
+          </label>
+          <input id="emergencyPhone" name="emergencyPhone" type="tel" required minlength="7" maxlength="15" inputmode="tel" autocomplete="tel" placeholder="(555) 555-5555"
+            class="w-full rounded-xl border border-sky-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+          <p id="emergencyPhone-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
+        </div>
+        <div>
+          <label for="emergencyRelation" class="block text-sm font-bold text-sky-900">
+            Relationship <span class="text-red-500">*</span>
+          </label>
+          <input id="emergencyRelation" name="emergencyRelation" type="text" required minlength="2" maxlength="30" placeholder="Spouse, parent, friend"
+            class="w-full rounded-xl border border-sky-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+          <p id="emergencyRelation-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
+        </div>
       </div>
 
-      <div class="notes">
-        <strong>Note:</strong> This card is a personal reference card, not an official certification card or medical document.
-      </div>
-    </section>
+      <h3 class="mt-7 border-b-2 border-sky-100 pb-2 text-lg font-black tracking-tight text-sky-900">Images</h3>
 
-    <section class="preview-area">
-      <h2>Card Preview</h2>
-      <div class="cards">
-        <article id="frontCard" class="id-card card-front" aria-label="Front of card">
-          <div class="wave"></div>
-          <div class="card-content">
-            <div class="front-main">
-			<table>
-			<tr><td>
+      <label for="frontProfileImage" class="mt-4 block text-sm font-bold text-sky-900">Front Profile Picture</label>
+      <input id="frontProfileImage" name="frontProfileImage" type="file" accept="image/*"
+        class="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none transition file:mr-3 file:rounded-full file:border-0 file:bg-sky-600 file:px-4 file:py-2 file:text-xs file:font-bold file:text-white hover:file:bg-sky-700 focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+      <p id="frontProfileImage-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
+
+      <label for="frontBackgroundImage" class="mt-4 block text-sm font-bold text-sky-900">Front Background Image</label>
+      <input id="frontBackgroundImage" name="frontBackgroundImage" type="file" accept="image/*"
+        class="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none transition file:mr-3 file:rounded-full file:border-0 file:bg-sky-600 file:px-4 file:py-2 file:text-xs file:font-bold file:text-white hover:file:bg-sky-700 focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+      <p id="frontBackgroundImage-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
+
+      <label for="backBackgroundImage" class="mt-4 block text-sm font-bold text-sky-900">Back Background Image</label>
+      <input id="backBackgroundImage" name="backBackgroundImage" type="file" accept="image/*"
+        class="mt-1 w-full rounded-xl border border-sky-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm outline-none transition file:mr-3 file:rounded-full file:border-0 file:bg-sky-600 file:px-4 file:py-2 file:text-xs file:font-bold file:text-white hover:file:bg-sky-700 focus:border-sky-500 focus:ring-2 focus:ring-sky-200">
+      <p id="backBackgroundImage-error" class="mt-1 hidden text-xs font-medium text-red-600" aria-live="polite"></p>
+
+      <h3 class="mt-7 border-b-2 border-sky-100 pb-2 text-lg font-black tracking-tight text-sky-900">Scuba Certifications</h3>
+      <p class="mt-2 text-sm text-slate-500">Add up to 12 certifications. Only certifications you enter will show on the back of the card.</p>
+      <div id="certFields" class="mt-2 space-y-4"></div>
+
+      <div class="mt-6 flex flex-wrap gap-2.5">
+        <button id="addCertButton" type="button" class="secondary rounded-full bg-sky-100 px-4 py-2.5 text-sm font-bold text-sky-900 shadow-sm transition hover:bg-sky-200" onclick="addCert()">+ Add Certification</button>
+        <button type="button" class="rounded-full bg-sky-600 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-sky-700" onclick="handleUpdate()">Update Preview</button>
+        <button type="button" class="rounded-full bg-sky-900 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-sky-950" onclick="handlePrint()">Print / Save PDF</button>
+        <button type="button" class="rounded-full bg-sky-100 px-4 py-2.5 text-sm font-bold text-sky-900 shadow-sm transition hover:bg-sky-200" onclick="saveCardAsJpg('frontCard', 'club-bcd-front.jpg')">Save Front JPG</button>
+        <button type="button" class="rounded-full bg-sky-100 px-4 py-2.5 text-sm font-bold text-sky-900 shadow-sm transition hover:bg-sky-200" onclick="saveCardAsJpg('backCard', 'club-bcd-back.jpg')">Save Back JPG</button>
+        <button type="button" class="rounded-full bg-red-500 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-red-600" onclick="resetForm()">Reset</button>
+      </div>
+
+      <p class="mt-5 rounded-2xl border border-sky-100 bg-sky-50 p-4 text-xs leading-relaxed text-slate-600">
+        <strong class="text-sky-900">Note:</strong> This card is a personal reference card, not an official certification card or medical document.
+      </p>
+    </form>
+
+    <section class="preview-area rounded-3xl bg-white/95 p-6 shadow-lg ring-1 ring-sky-100">
+      <h2 class="preview-title text-xl font-black tracking-tight text-sky-950">Card Preview</h2>
+      <div class="cards mt-6 flex flex-wrap items-start justify-center gap-6">
+
+        <article id="frontCard" class="id-card relative h-[2.125in] w-[3.375in] max-w-full overflow-hidden rounded-[18px] border-2 border-sky-800 bg-cover bg-center bg-gradient-to-br from-[#e7f8ff] via-[#96dcf7] to-[#38aee5] shadow-[0_8px_20px_rgba(0,0,0,0.18)]" aria-label="Front of card">
+          <span class="pointer-events-none absolute -bottom-12 -left-10 -right-10 h-24 rounded-t-[50%] bg-sky-900/20" aria-hidden="true"></span>
+          <div class="relative z-10 flex h-full flex-col p-3">
+            <div class="mb-1.5 flex items-center justify-between gap-2">
               <div>
-				<div id="namePreview" class="member-name">Your Name</div>
-                <div class="small-line"><span class="label-text">Phone:</span> <span id="phonePreview">---</span></div>
-                <div class="small-line"><span class="label-text">Blood / Notes:</span> <span id="bloodPreview">---</span></div>
-                <div class="small-line"><span class="label-text">Medical:</span> <span id="medicalPreview">---</span></div>
-                <div class="front-emergency-title">Emergency Contact</div>
-                <div class="emergency-box">
-                  <div class="small-line"><span class="label-text">Name:</span> <span id="emNamePreview">---</span></div>
-                  <div class="small-line"><span class="label-text">Phone:</span> <span id="emPhonePreview">---</span></div>
-                  <div class="small-line"><span class="label-text">Relationship:</span> <span id="emRelationPreview">---</span></div>
+                <div class="font-black leading-tight text-slate-900">CLUB BCD</div>
+                <div class="text-[0.52rem] font-bold uppercase tracking-[0.8px] text-sky-800">Brazoria County Diving Club</div>
+              </div>
+              <span class="rounded-full bg-white/70 px-2 py-0.5 text-[0.5rem] font-bold uppercase tracking-wider text-sky-900">Diver ID</span>
+            </div>
+            <div class="flex flex-1 gap-2.5">
+              <div class="min-w-0 flex-1">
+                <div id="namePreview" class="break-words text-[1.05rem] font-black uppercase leading-tight text-slate-900">Your Name</div>
+                <p class="mt-1 text-[0.62rem] leading-snug"><span class="font-bold text-sky-800">Phone:</span> <span id="phonePreview">---</span></p>
+                <p class="text-[0.62rem] leading-snug"><span class="font-bold text-sky-800">Blood / Notes:</span> <span id="bloodPreview">---</span></p>
+                <p class="text-[0.62rem] leading-snug"><span class="font-bold text-sky-800">Medical:</span> <span id="medicalPreview">---</span></p>
+                <div class="mt-1.5 rounded-lg border border-sky-800/25 bg-white/70 px-1.5 py-1">
+                  <div class="text-[0.5rem] font-black uppercase tracking-wide text-sky-800">Emergency Contact</div>
+                  <p class="text-[0.6rem] leading-snug"><span class="font-bold text-sky-800">Name:</span> <span id="emNamePreview">---</span></p>
+                  <p class="text-[0.6rem] leading-snug"><span class="font-bold text-sky-800">Phone:</span> <span id="emPhonePreview">---</span></p>
+                  <p class="text-[0.6rem] leading-snug"><span class="font-bold text-sky-800">Relationship:</span> <span id="emRelationPreview">---</span></p>
                 </div>
               </div>
-			  </td><td>
-			  <div style="display: flex; justify-content: center; align-items: top;">
-			  <img id="frontPhotoPreview" class="photo" alt="Front uploaded preview" style="width: 100px;"/>
-			  </div>
-			  </td></tr></table>
+              <div class="flex shrink-0 items-start justify-center">
+                <img id="frontPhotoPreview" src="data:image/svg+xml,%0A%20%20%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22300%22%20height%3D%22300%22%20viewBox%3D%220%200%20300%20300%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22300%22%20height%3D%22300%22%20fill%3D%22%23d9f3ff%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22150%22%20cy%3D%22125%22%20r%3D%2248%22%20fill%3D%22%2349b9ee%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%20250c15-60%20145-60%20160%200%22%20fill%3D%22%23064f73%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%22150%22%20y%3D%22285%22%20font-family%3D%22Arial%22%20font-size%3D%2224%22%20text-anchor%3D%22middle%22%20fill%3D%22%23064f73%22%3ECLUB%20BCD%3C/text%3E%0A%20%20%20%20%20%20%3C/svg%3E%0A%20%20%20%20" alt="Front uploaded preview" class="h-[0.78in] w-[0.78in] rounded-xl border-2 border-white bg-white/70 object-cover">
+              </div>
             </div>
-            <div class="motto">www.clubbcd.com</div>
-		</div>
+            <div class="mt-auto pt-1 text-center text-[0.58rem] font-bold tracking-wide text-slate-900">www.clubbcd.com</div>
+          </div>
         </article>
 
-        <article id="backCard" class="id-card card-back" aria-label="Back of card">
-          <div class="card-content">
-            <div class="back-title">Scuba Certifications</div>
-            <div id="certPreview" class="cert-list"></div>
-
-            <div class="fine-print">
-              Personal reference card only. Not a substitute for official certification, medical clearance, dive planning, or emergency services.
-            </div>
+        <article id="backCard" class="id-card relative h-[2.125in] w-[3.375in] max-w-full overflow-hidden rounded-[18px] border-2 border-sky-800 bg-cover bg-center bg-gradient-to-br from-white to-[#dff5ff] shadow-[0_8px_20px_rgba(0,0,0,0.18)]" aria-label="Back of card">
+          <div class="relative z-10 flex h-full flex-col p-3">
+            <div class="text-[0.85rem] font-black uppercase text-sky-800">Scuba Certifications</div>
+            <div id="certPreview" class="mt-1 grid grid-cols-4 gap-[3px] overflow-hidden"></div>
+            <p class="mt-auto text-[0.46rem] leading-tight text-[#254f62]">Personal reference card only. Not a substitute for official certification, medical clearance, dive planning, or emergency services.</p>
           </div>
         </article>
       </div>
-      <div class="notes print-hide">
-        Tip: Use Save Front/Back JPG to download each side as an image. You can also use Print / Save PDF.
-      </div>
+
+      <p class="notes print-hide mt-6 rounded-2xl border border-sky-100 bg-sky-50 p-4 text-sm leading-relaxed text-slate-600">
+        <strong class="text-sky-900">Tip:</strong> Use Save Front/Back JPG to download each side as an image. You can also use Print / Save PDF.
+      </p>
     </section>
   </main>
+
+  <footer class="mt-8 bg-sky-950 px-4 py-10 text-center text-sky-100 print:hidden">
+    <p class="font-bold">Club BCD | Brazoria County Diving Club</p>
+    <p class="mt-1 text-sm text-sky-300">Family-friendly diving in Brazoria County</p>
+    <p class="mt-4 text-xs text-sky-400">
+      <a href="https://github.com/holyman83/ClubBCDPage/" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-full border border-sky-800 px-3 py-1.5 transition hover:border-sky-500 hover:text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.41.35.78 1.05.78 2.12v3.14c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+        Source code
+      </a>
+    </p>
+  </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     const certFields = document.getElementById('certFields');
     let certCount = 0;
+
+    const fieldClass = 'w-full rounded-xl border border-sky-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:ring-2 focus:ring-sky-200';
 
     const fallbackSvg = encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
@@ -534,18 +236,26 @@
         return;
       }
       certCount++;
+      const index = certCount;
       const cert = document.createElement('div');
-      cert.className = 'cert-card';
+      cert.className = 'cert-card rounded-2xl border border-dashed border-sky-200 bg-sky-50/60 p-4';
       cert.innerHTML = `
-        <label>Certification Name</label>
-        <input class="cert-name" type="text" placeholder="Open Water Diver, Nitrox, Rescue Diver" value="${escapeHtml(name)}" oninput="updatePreview()" />
-        <label>Certification Number</label>
-        <input class="cert-number" type="text" placeholder="Certification number" value="${escapeHtml(number)}" oninput="updatePreview()" />
-        <div class="button-row">
-          <button type="button" class="danger" onclick="this.closest('.cert-card').remove(); updatePreview(); updateAddButton();">Remove</button>
+        <div class="flex items-center justify-between gap-2">
+          <p class="text-sm font-bold text-sky-900">Certification ${index}</p>
+          <button type="button" class="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700 transition hover:bg-red-200" onclick="removeCert(this)">Remove</button>
         </div>
+        <label for="certName${index}" class="mt-3 block text-xs font-bold text-sky-900">Certification Name</label>
+        <input id="certName${index}" class="cert-name ${fieldClass}" type="text" maxlength="60" placeholder="Open Water Diver, Nitrox, Rescue Diver" value="${escapeHtml(name)}" oninput="updatePreview()" onblur="validateField(this.id)">
+        <label for="certNumber${index}" class="mt-3 block text-xs font-bold text-sky-900">Certification Number</label>
+        <input id="certNumber${index}" class="cert-number ${fieldClass}" type="text" maxlength="40" placeholder="Certification number" value="${escapeHtml(number)}" oninput="updatePreview()" onblur="validateField(this.id)">
       `;
       certFields.appendChild(cert);
+      updatePreview();
+      updateAddButton();
+    }
+
+    function removeCert(button) {
+      button.closest('.cert-card').remove();
       updatePreview();
       updateAddButton();
     }
@@ -556,8 +266,9 @@
       const count = document.querySelectorAll('.cert-card').length;
       button.disabled = count >= 12;
       button.textContent = count >= 12 ? '12 Certifications Added' : '+ Add Certification';
-      button.style.opacity = count >= 12 ? '0.6' : '1';
-      button.style.cursor = count >= 12 ? 'not-allowed' : 'pointer';
+      button.classList.toggle('opacity-60', count >= 12);
+      button.classList.toggle('cursor-not-allowed', count >= 12);
+      button.classList.toggle('hover:bg-sky-200', count < 12);
     }
 
     function escapeHtml(value) {
@@ -594,53 +305,125 @@
         const certNumber = numbers[index].value.trim();
         if (!certName && !certNumber) return;
         const div = document.createElement('div');
-        div.className = 'cert-item';
-        div.innerHTML = `<strong>${escapeHtml(certName || 'Certification')}</strong>No. ${escapeHtml(certNumber || '---')}`;
+        div.className = 'min-h-[0.31in] break-words rounded border border-sky-800/20 bg-white/55 p-0.5 text-[0.38rem] leading-tight';
+        div.innerHTML = `<strong class="block text-[0.4rem] leading-tight">${escapeHtml(certName || 'Certification')}</strong>No. ${escapeHtml(certNumber || '---')}`;
         certPreview.appendChild(div);
       });
 
       if (!certPreview.children.length) {
         const div = document.createElement('div');
-        div.className = 'cert-item empty-cert-message';
-        div.innerHTML = '<strong>No certifications entered yet</strong>Add certifications using the form.';
+        div.className = 'col-span-4 flex min-h-[0.5in] flex-col items-center justify-center text-center text-[0.48rem]';
+        div.innerHTML = '<strong class="text-[0.5rem]">No certifications entered yet</strong>Add certifications using the form.';
         certPreview.appendChild(div);
       }
 
       updateAddButton();
     }
 
-    function handleProfileImageUpload(inputId, previewId) {
+    const requiredFields = ['memberName', 'emergencyName', 'emergencyPhone', 'emergencyRelation'];
+    const phoneFields = ['phone', 'emergencyPhone'];
+
+    function showError(id, message) {
+      const input = document.getElementById(id);
+      const error = document.getElementById(id + '-error');
+      if (input) {
+        input.classList.remove('border-sky-200');
+        input.classList.add('border-red-400', 'bg-red-50/40');
+        input.setAttribute('aria-invalid', 'true');
+      }
+      if (error) {
+        error.textContent = message;
+        error.classList.remove('hidden');
+      }
+    }
+
+    function clearError(id) {
+      const input = document.getElementById(id);
+      const error = document.getElementById(id + '-error');
+      if (input) {
+        input.classList.remove('border-red-400', 'bg-red-50/40');
+        input.classList.add('border-sky-200');
+        input.removeAttribute('aria-invalid');
+      }
+      if (error) error.classList.add('hidden');
+    }
+
+    function validateField(id) {
+      const input = document.getElementById(id);
+      if (!input) return true;
+      const value = input.value.trim();
+      const isRequired = requiredFields.includes(id);
+
+      if (isRequired && !value) {
+        showError(id, 'This field is required.');
+        return false;
+      }
+      if (isRequired && value.length < 2) {
+        showError(id, 'Must be at least 2 characters.');
+        return false;
+      }
+      if (phoneFields.includes(id) && value) {
+        const digits = value.replace(/\D/g, '');
+        if (digits.length < 7 || digits.length > 15) {
+          showError(id, 'Enter a valid phone number, e.g. (555) 555-5555.');
+          return false;
+        }
+      }
+      clearError(id);
+      return true;
+    }
+
+    function validateAll() {
+      let firstInvalid = null;
+      ['memberName', 'phone', 'emergencyName', 'emergencyPhone', 'emergencyRelation'].forEach(id => {
+        if (!validateField(id) && !firstInvalid) firstInvalid = id;
+      });
+      if (firstInvalid) {
+        const el = document.getElementById(firstInvalid);
+        el.focus();
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return false;
+      }
+      return true;
+    }
+
+    function handleUpdate() {
+      if (!validateAll()) return;
+      updatePreview();
+    }
+
+    function handlePrint() {
+      if (!validateAll()) return;
+      window.print();
+    }
+
+    function handleProfileImageUpload(inputId, applyPreview) {
       const input = document.getElementById(inputId);
-      const preview = document.getElementById(previewId);
       input.addEventListener('change', () => {
+        const error = document.getElementById(inputId + '-error');
         const file = input.files && input.files[0];
         if (!file) return;
+        if (!file.type.startsWith('image/')) {
+          error.textContent = 'Please choose an image file (PNG, JPG, GIF, etc.).';
+          error.classList.remove('hidden');
+          input.value = '';
+          return;
+        }
+        if (file.size > 8 * 1024 * 1024) {
+          error.textContent = 'Image is too large. Maximum size is 8 MB.';
+          error.classList.remove('hidden');
+          input.value = '';
+          return;
+        }
+        error.classList.add('hidden');
         const reader = new FileReader();
-        reader.onload = event => {
-          preview.src = event.target.result;
-          preview.style.display = 'block';
-        };
+        reader.onload = event => applyPreview(event.target.result);
         reader.readAsDataURL(file);
       });
     }
-
-    function handleBackgroundUpload(inputId, cardId, fallbackGradient) {
-      const input = document.getElementById(inputId);
-      const card = document.getElementById(cardId);
-      input.addEventListener('change', () => {
-        const file = input.files && input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = event => {
-          card.style.backgroundImage = `linear-gradient(rgba(255,255,255,0.18), rgba(255,255,255,0.18)), url('${event.target.result}')`;
-        };
-        reader.readAsDataURL(file);
-      });
-      card.dataset.fallbackGradient = fallbackGradient;
-    }
-
 
     async function saveCardAsJpg(cardId, filename) {
+      if (!validateAll()) return;
       updatePreview();
 
       if (typeof html2canvas === 'undefined') {
@@ -678,8 +461,16 @@
 
     function resetForm() {
       if (!confirm('Clear the card designer?')) return;
-      document.querySelectorAll('input[type="text"], textarea').forEach(input => input.value = '');
-      document.querySelectorAll('input[type="file"]').forEach(input => input.value = '');
+      document.querySelectorAll('#cardForm input[type="text"], #cardForm input[type="tel"], #cardForm textarea').forEach(input => input.value = '');
+      document.querySelectorAll('#cardForm input[type="file"]').forEach(input => input.value = '');
+      document.querySelectorAll('#cardForm .hidden').forEach(el => {
+        if (el.id && el.id.endsWith('-error')) el.classList.add('hidden');
+      });
+      document.querySelectorAll('#cardForm input').forEach(input => {
+        input.classList.remove('border-red-400', 'bg-red-50/40');
+        input.classList.add('border-sky-200');
+        input.removeAttribute('aria-invalid');
+      });
       certFields.innerHTML = '';
       document.getElementById('frontPhotoPreview').src = `data:image/svg+xml,${fallbackSvg}`;
       document.getElementById('frontCard').style.backgroundImage = '';
@@ -688,13 +479,23 @@
       updatePreview();
     }
 
-    document.querySelectorAll('input, textarea').forEach(input => {
-      if (input.type !== 'file') input.addEventListener('input', updatePreview);
+    document.querySelectorAll('#cardForm input, #cardForm textarea').forEach(input => {
+      if (input.type !== 'file') {
+        input.addEventListener('input', updatePreview);
+        input.addEventListener('blur', () => validateField(input.id));
+      }
     });
 
-    handleProfileImageUpload('frontProfileImage', 'frontPhotoPreview');
-    handleBackgroundUpload('frontBackgroundImage', 'frontCard', 'linear-gradient(135deg, #e7f8ff 0%, #96dcf7 55%, #38aee5 100%)');
-    handleBackgroundUpload('backBackgroundImage', 'backCard', 'linear-gradient(135deg, #ffffff 0%, #dff5ff 100%)');
+    handleProfileImageUpload('frontProfileImage', dataUrl => {
+      document.getElementById('frontPhotoPreview').src = dataUrl;
+    });
+    handleProfileImageUpload('frontBackgroundImage', dataUrl => {
+      document.getElementById('frontCard').style.backgroundImage = `linear-gradient(rgba(255,255,255,0.18), rgba(255,255,255,0.18)), url('${dataUrl}')`;
+    });
+    handleProfileImageUpload('backBackgroundImage', dataUrl => {
+      document.getElementById('backCard').style.backgroundImage = `linear-gradient(rgba(255,255,255,0.18), rgba(255,255,255,0.18)), url('${dataUrl}')`;
+    });
+
     addCert('Open Water Diver', '');
     updatePreview();
   </script>
